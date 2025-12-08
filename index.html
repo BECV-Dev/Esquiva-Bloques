@@ -3,6 +3,13 @@
 
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 👇 Añade estas 3 líneas -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
   <title>Mini Juego 2D - Esquiva los bloques</title>
   <style>
     * {
@@ -35,16 +42,17 @@
     }
 
     #gameCanvas {
-  width: 100%;
-  max-width: 900px;
-  max-height: 80vh;        /* altura normal en desktop */
-  aspect-ratio: 9 / 16;
-  border-radius: 18px;
-  border: 1px solid rgba(129, 140, 248, 0.6);
-  background: radial-gradient(circle at center, #050510, #020008 70%);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
-  display: block;
-}
+      width: 100%;
+      max-width: 900px;
+      max-height: 80vh;
+      /* altura normal en desktop */
+      aspect-ratio: 9 / 16;
+      border-radius: 18px;
+      border: 1px solid rgba(129, 140, 248, 0.6);
+      background: radial-gradient(circle at center, #050510, #020008 70%);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
+      display: block;
+    }
 
 
     .info {
@@ -87,42 +95,54 @@
     }
 
     /* 📱 Ajustes para pantallas pequeñas (móvil) */
-@media (max-width: 768px) {
+    @media (max-width: 768px) {
 
-  body {
-    align-items: flex-start;
-  }
+      body {
+        align-items: flex-start;
+      }
 
-  .game-wrapper {
-    max-width: 100%;
-    padding: 0;
-    margin-top: 8px;
-  }
+      .game-wrapper {
+        max-width: 100%;
+        padding: 0;
+        margin-top: 8px;
+      }
 
-  /* Canvas más grande en móvil */
-  #gameCanvas {
-    max-height: 90vh;   /* antes 80vh → ahora usa más pantalla */
-    border-radius: 12px;
-  }
+      .version-tag {
+        font-size: 11px;
+        opacity: 0.55;
+        margin-top: -4px;
+        margin-bottom: 4px;
+        text-align: center;
+      }
 
-  /* Ajustes de controles móviles */
-  .mobile-controls {
-    gap: 12px;
-    margin-top: 10px;
-  }
 
-  .mobile-controls button {
-    padding: 18px 0;     /* más altos */
-    font-size: 26px;     /* iconos más grandes */
-  }
-}
+      /* Canvas más grande en móvil */
+      #gameCanvas {
+        max-height: 90vh;
+        /* antes 80vh → ahora usa más pantalla */
+        border-radius: 12px;
+      }
 
+      /* Ajustes de controles móviles */
+      .mobile-controls {
+        gap: 12px;
+        margin-top: 10px;
+      }
+
+      .mobile-controls button {
+        padding: 18px 0;
+        /* más altos */
+        font-size: 26px;
+        /* iconos más grandes */
+      }
+    }
   </style>
 </head>
 
 <body>
   <div class="game-wrapper">
     <h1>🎮 Esquiva los bloques</h1>
+    <div class="version-tag">v0.1.3</div>
     <canvas id="gameCanvas" width="480" height="640"></canvas>
 
     <!-- Controles móviles (aparecen solo si hay pantalla táctil) -->
@@ -139,6 +159,9 @@
   </div>
 
   <script>
+    const GAME_VERSION = "v0.1.3";
+    console.log("Esquiva los bloques –", GAME_VERSION);
+
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -221,38 +244,38 @@
       btnRight.addEventListener("mouseup", releaseRight);
       btnRight.addEventListener("mouseleave", releaseRight);
 
-        // --- Control táctil directo sobre el canvas ---
-  const handleCanvasTouch = (e) => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    if (!touch) return;
+      // --- Control táctil directo sobre el canvas ---
+      const handleCanvasTouch = (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        if (!touch) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const x = touch.clientX - rect.left;
+        const rect = canvas.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
 
-    const middle = rect.width / 2;
+        const middle = rect.width / 2;
 
-    // Reseteamos primero
-    keys.ArrowLeft = false;
-    keys.ArrowRight = false;
+        // Reseteamos primero
+        keys.ArrowLeft = false;
+        keys.ArrowRight = false;
 
-    if (x < middle) {
-      keys.ArrowLeft = true;
-    } else {
-      keys.ArrowRight = true;
-    }
-  };
+        if (x < middle) {
+          keys.ArrowLeft = true;
+        } else {
+          keys.ArrowRight = true;
+        }
+      };
 
-  const handleCanvasTouchEnd = (e) => {
-    e.preventDefault();
-    keys.ArrowLeft = false;
-    keys.ArrowRight = false;
-  };
+      const handleCanvasTouchEnd = (e) => {
+        e.preventDefault();
+        keys.ArrowLeft = false;
+        keys.ArrowRight = false;
+      };
 
-  canvas.addEventListener("touchstart", handleCanvasTouch);
-  canvas.addEventListener("touchmove", handleCanvasTouch);
-  canvas.addEventListener("touchend", handleCanvasTouchEnd);
-  canvas.addEventListener("touchcancel", handleCanvasTouchEnd);
+      canvas.addEventListener("touchstart", handleCanvasTouch);
+      canvas.addEventListener("touchmove", handleCanvasTouch);
+      canvas.addEventListener("touchend", handleCanvasTouchEnd);
+      canvas.addEventListener("touchcancel", handleCanvasTouchEnd);
 
     }
 
