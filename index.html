@@ -35,16 +35,17 @@
     }
 
     #gameCanvas {
-      width: 100%;
-      max-width: 900px;
-      max-height: 80vh;
-      aspect-ratio: 9 / 16;
-      border-radius: 18px;
-      border: 1px solid rgba(129, 140, 248, 0.6);
-      background: radial-gradient(circle at center, #050510, #020008 70%);
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
-      display: block;
-    }
+  width: 100%;
+  max-width: 900px;
+  max-height: 80vh;        /* altura normal en desktop */
+  aspect-ratio: 9 / 16;
+  border-radius: 18px;
+  border: 1px solid rgba(129, 140, 248, 0.6);
+  background: radial-gradient(circle at center, #050510, #020008 70%);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
+  display: block;
+}
+
 
     .info {
       font-size: 14px;
@@ -84,6 +85,38 @@
     body.is-touch .mobile-controls {
       display: flex;
     }
+
+    /* 📱 Ajustes para pantallas pequeñas (móvil) */
+@media (max-width: 768px) {
+
+  body {
+    align-items: flex-start;
+  }
+
+  .game-wrapper {
+    max-width: 100%;
+    padding: 0;
+    margin-top: 8px;
+  }
+
+  /* Canvas más grande en móvil */
+  #gameCanvas {
+    max-height: 90vh;   /* antes 80vh → ahora usa más pantalla */
+    border-radius: 12px;
+  }
+
+  /* Ajustes de controles móviles */
+  .mobile-controls {
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .mobile-controls button {
+    padding: 18px 0;     /* más altos */
+    font-size: 26px;     /* iconos más grandes */
+  }
+}
+
   </style>
 </head>
 
@@ -187,6 +220,40 @@
       btnRight.addEventListener("mousedown", pressRight);
       btnRight.addEventListener("mouseup", releaseRight);
       btnRight.addEventListener("mouseleave", releaseRight);
+
+        // --- Control táctil directo sobre el canvas ---
+  const handleCanvasTouch = (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    if (!touch) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+
+    const middle = rect.width / 2;
+
+    // Reseteamos primero
+    keys.ArrowLeft = false;
+    keys.ArrowRight = false;
+
+    if (x < middle) {
+      keys.ArrowLeft = true;
+    } else {
+      keys.ArrowRight = true;
+    }
+  };
+
+  const handleCanvasTouchEnd = (e) => {
+    e.preventDefault();
+    keys.ArrowLeft = false;
+    keys.ArrowRight = false;
+  };
+
+  canvas.addEventListener("touchstart", handleCanvasTouch);
+  canvas.addEventListener("touchmove", handleCanvasTouch);
+  canvas.addEventListener("touchend", handleCanvasTouchEnd);
+  canvas.addEventListener("touchcancel", handleCanvasTouchEnd);
+
     }
 
     // --- EFECTOS extra ---
