@@ -51,17 +51,17 @@
     }
 
     #gameCanvas {
-      width: 100%;
-      max-width: 900px;
-      max-height: 80vh;
-      /* altura normal en desktop */
-      aspect-ratio: 9 / 16;
-      border-radius: 18px;
-      border: 1px solid rgba(129, 140, 248, 0.6);
-      background: radial-gradient(circle at center, #050510, #020008 70%);
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
-      display: block;
-    }
+  width: 100%;
+  max-width: 900px;
+  max-height: 80vh;             /* 🔹 Desktop: hasta 80% del alto */
+  aspect-ratio: 9 / 16;
+  border-radius: 18px;
+  border: 1px solid rgba(129, 140, 248, 0.6);
+  background: radial-gradient(circle at center, #050510, #020008 70%);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
+  display: block;
+}
+
 
 
     .info {
@@ -103,51 +103,51 @@
       display: flex;
     }
 
-    /* 📱 Ajustes para pantallas pequeñas (móvil) */
-    @media (max-width: 768px) {
+    /* 📱 Ajustes solo para pantallas pequeñas (móvil) */
+@media (max-width: 768px) {
 
-      h1 {
-        font-size: 18px;
-        margin-bottom: 2px;
-      }
+  body {
+    align-items: flex-start;
+  }
 
-      .version-tag {
-        font-size: 10px;
-        margin-top: -4px;
-        margin-bottom: 2px;
-        opacity: 0.45;
-      }
+  .game-wrapper {
+    margin-top: 0;
+    max-width: 100%;
+    padding: 0;
+  }
 
-      .game-wrapper {
-        margin-top: 0;
-      }
+  h1 {
+    font-size: 18px;
+    margin-bottom: 2px;
+  }
 
-      #gameCanvas {
-        width: 100%;
-        height: 92vh;
-        /* ocupa casi toda la pantalla */
-        max-height: 92vh;
-        border-radius: 12px;
-      }
+  .version-tag {
+    font-size: 10px;
+    margin-top: -4px;
+    margin-bottom: 2px;
+    opacity: 0.45;
+  }
 
-      /* si el navegador soporta 100svh (alto real) lo usamos */
-      @supports (height: 100svh) {
-        #gameCanvas {
-          height: 100svh;
-          max-height: 100svh;
-        }
-      }
+  /* 🔹 Aquí sí hacemos el canvas casi fullscreen */
+  #gameCanvas {
+    width: 100%;
+    height: 92vh;
+    max-height: 92vh;
+    border-radius: 12px;
+    aspect-ratio: auto;
+  }
 
-      .mobile-controls {
-        gap: 12px;
-        margin-top: 10px;
-      }
+  .mobile-controls {
+    gap: 12px;
+    margin-top: 10px;
+  }
 
-      .mobile-controls button {
-        padding: 18px 0;
-        font-size: 26px;
-      }
-    }
+  .mobile-controls button {
+    padding: 18px 0;
+    font-size: 26px;
+  }
+}  /* 👈 MUY IMPORTANTE ESTA LLAVE DE CIERRE */
+
 
 
     /* Usar el alto real del dispositivo cuando esté disponible */
@@ -166,7 +166,7 @@
 <body>
   <div class="game-wrapper">
     <h1>🎮 Esquiva los bloques</h1>
-    <div class="version-tag">v0.4</div>
+    <div class="version-tag">v0.1.6</div>
     <canvas id="gameCanvas" width="480" height="640"></canvas>
 
     <!-- Controles móviles (aparecen solo si hay pantalla táctil) -->
@@ -183,7 +183,7 @@
   </div>
 
   <script>
-    const GAME_VERSION = "v0.1.5";
+    const GAME_VERSION = "v0.1.6";
     console.log("Esquiva los bloques –", GAME_VERSION);
 
     const canvas = document.getElementById("gameCanvas");
