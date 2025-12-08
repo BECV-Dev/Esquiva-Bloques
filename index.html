@@ -5,10 +5,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- 👇 Añade estas 3 líneas -->
+  <!-- Evitar cache agresivo -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
+
+  <!-- PWA / modo app -->
+  <meta name="theme-color" content="#020617">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Manifest de la app (lo vamos a crear en el paso 2) -->
+  <link rel="manifest" href="manifest.json">
 
   <title>Mini Juego 2D - Esquiva los bloques</title>
   <style>
@@ -20,20 +29,20 @@
 
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      min-height: 100vh;
       margin: 0;
+      min-height: 100vh;
       display: flex;
-      align-items: center;
       justify-content: center;
       background: radial-gradient(circle at top, #101020, #05010a 60%);
       color: #e5e7eb;
     }
 
     .game-wrapper {
+      width: 100%;
+      max-width: 900px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
     }
 
     h1 {
@@ -97,33 +106,38 @@
     /* 📱 Ajustes para pantallas pequeñas (móvil) */
     @media (max-width: 768px) {
 
-      body {
-        align-items: flex-start;
-      }
-
-      .game-wrapper {
-        max-width: 100%;
-        padding: 0;
-        margin-top: 8px;
+      h1 {
+        font-size: 18px;
+        margin-bottom: 2px;
       }
 
       .version-tag {
-        font-size: 11px;
-        opacity: 0.55;
+        font-size: 10px;
         margin-top: -4px;
-        margin-bottom: 4px;
-        text-align: center;
+        margin-bottom: 2px;
+        opacity: 0.45;
       }
 
+      .game-wrapper {
+        margin-top: 0;
+      }
 
-      /* Canvas más grande en móvil */
       #gameCanvas {
-        max-height: 90vh;
-        /* antes 80vh → ahora usa más pantalla */
+        width: 100%;
+        height: 92vh;
+        /* ocupa casi toda la pantalla */
+        max-height: 92vh;
         border-radius: 12px;
       }
 
-      /* Ajustes de controles móviles */
+      /* si el navegador soporta 100svh (alto real) lo usamos */
+      @supports (height: 100svh) {
+        #gameCanvas {
+          height: 100svh;
+          max-height: 100svh;
+        }
+      }
+
       .mobile-controls {
         gap: 12px;
         margin-top: 10px;
@@ -131,9 +145,19 @@
 
       .mobile-controls button {
         padding: 18px 0;
-        /* más altos */
         font-size: 26px;
-        /* iconos más grandes */
+      }
+    }
+
+
+    /* Usar el alto real del dispositivo cuando esté disponible */
+    @supports (height: 100svh) {
+      body {
+        min-height: 100svh;
+      }
+
+      .game-wrapper {
+        min-height: 100svh;
       }
     }
   </style>
@@ -142,7 +166,7 @@
 <body>
   <div class="game-wrapper">
     <h1>🎮 Esquiva los bloques</h1>
-    <div class="version-tag">v0.1.3</div>
+    <div class="version-tag">v0.4</div>
     <canvas id="gameCanvas" width="480" height="640"></canvas>
 
     <!-- Controles móviles (aparecen solo si hay pantalla táctil) -->
@@ -159,7 +183,7 @@
   </div>
 
   <script>
-    const GAME_VERSION = "v0.1.3";
+    const GAME_VERSION = "v0.1.5";
     console.log("Esquiva los bloques –", GAME_VERSION);
 
     const canvas = document.getElementById("gameCanvas");
@@ -1039,6 +1063,19 @@
 
       requestAnimationFrame(gameLoop);
     }
+
+    // Ajustar altura real en móviles (iOS fix)
+    function fixViewportHeight() {
+      const vh = window.innerHeight;
+      document.querySelector('.game-wrapper').style.height = vh + 'px';
+    }
+
+    if (isTouchDevice) {
+      window.addEventListener('resize', fixViewportHeight);
+      window.addEventListener('orientationchange', fixViewportHeight);
+      fixViewportHeight();
+    }
+
 
     requestAnimationFrame(gameLoop);
   </script>
