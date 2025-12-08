@@ -43,6 +43,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      margin-top: 4px;
     }
 
     h1 {
@@ -51,16 +52,17 @@
     }
 
     #gameCanvas {
-  width: 100%;
-  max-width: 900px;
-  max-height: 80vh;             /* 🔹 Desktop: hasta 80% del alto */
-  aspect-ratio: 9 / 16;
-  border-radius: 18px;
-  border: 1px solid rgba(129, 140, 248, 0.6);
-  background: radial-gradient(circle at center, #050510, #020008 70%);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
-  display: block;
-}
+      width: 100%;
+      max-width: 900px;
+      max-height: 80vh;
+      /* 🔹 Desktop: hasta 80% del alto */
+      aspect-ratio: 9 / 16;
+      border-radius: 18px;
+      border: 1px solid rgba(129, 140, 248, 0.6);
+      background: radial-gradient(circle at center, #050510, #020008 70%);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
+      display: block;
+    }
 
 
 
@@ -81,6 +83,7 @@
       gap: 16px;
       width: 100%;
       justify-content: space-between;
+      margin-bottom: 18px;
     }
 
     .mobile-controls button {
@@ -104,51 +107,56 @@
     }
 
     /* 📱 Ajustes solo para pantallas pequeñas (móvil) */
-@media (max-width: 768px) {
+    @media (max-width: 768px) {
 
-  body {
-    align-items: flex-start;
-  }
+      body {
+        align-items: flex-start;
+      }
 
-  .game-wrapper {
-    margin-top: 0;
-    max-width: 100%;
-    padding: 0;
-  }
+      .game-wrapper {
+        margin-top: 0;
+        max-width: 100%;
+        padding: 0;
+      }
 
-  h1 {
-    font-size: 18px;
-    margin-bottom: 2px;
-  }
+      h1 {
+        font-size: 18px;
+        margin-bottom: 2px;
+      }
 
-  .version-tag {
-    font-size: 10px;
-    margin-top: -4px;
-    margin-bottom: 2px;
-    opacity: 0.45;
-  }
+      .version-tag {
+        font-size: 9px;
+        margin-top: -4px;
+        margin-bottom: 2px;
+        opacity: 0.35;
+      }
 
-  /* 🔹 Aquí sí hacemos el canvas casi fullscreen */
-  #gameCanvas {
-    width: 100%;
-    height: 92vh;
-    max-height: 92vh;
-    border-radius: 12px;
-    aspect-ratio: auto;
-  }
+      /* 🔹 Aquí sí hacemos el canvas casi fullscreen */
+      #gameCanvas {
+        width: 100%;
+        height: 94vh;
+        max-height: 94vh;
+        border-radius: 12px;
+        aspect-ratio: auto;
+      }
 
-  .mobile-controls {
-    gap: 12px;
-    margin-top: 10px;
-  }
+      .mobile-controls {
+        gap: 12px;
+        margin-top: 10px;
+      }
 
-  .mobile-controls button {
-    padding: 18px 0;
-    font-size: 26px;
-  }
-}  /* 👈 MUY IMPORTANTE ESTA LLAVE DE CIERRE */
+      .mobile-controls button {
+        padding: 18px 0;
+        font-size: 26px;
+      }
+    }
 
-
+    @media (min-width: 1024px) {
+      #gameCanvas {
+        max-height: 85vh;
+        aspect-ratio: 3 / 4;
+      }
+    }
 
     /* Usar el alto real del dispositivo cuando esté disponible */
     @supports (height: 100svh) {
@@ -166,7 +174,7 @@
 <body>
   <div class="game-wrapper">
     <h1>🎮 Esquiva los bloques</h1>
-    <div class="version-tag">v0.1.6</div>
+    <div class="version-tag">v0.1.7</div>
     <canvas id="gameCanvas" width="480" height="640"></canvas>
 
     <!-- Controles móviles (aparecen solo si hay pantalla táctil) -->
@@ -183,7 +191,7 @@
   </div>
 
   <script>
-    const GAME_VERSION = "v0.1.6";
+    const GAME_VERSION = "v0.1.7";
     console.log("Esquiva los bloques –", GAME_VERSION);
 
     const canvas = document.getElementById("gameCanvas");
@@ -796,6 +804,10 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height * 0.46;
+
+
       ctx.save();
       if (screenShake > 0) {
         const dx = (Math.random() - 0.5) * screenShake;
@@ -976,10 +988,11 @@
       ctx.fillStyle = "#fff";
       ctx.font = "20px system-ui";
       ctx.textAlign = "left";
-      ctx.fillText("Puntaje: " + Math.floor(score), 20, 30);
-      ctx.fillText("Mejor: " + Math.floor(bestScore), 20, 55);
-      ctx.fillText("Combo: " + combo + " (Mejor: " + bestCombo + ")", 20, 80);
-      ctx.fillText("Nivel: " + level, 20, 105);
+      drawTextWithStroke("Puntaje: " + Math.floor(score), 20, 50);
+      drawTextWithStroke("Mejor: " + Math.floor(bestScore), 20, 80, 20);
+      drawTextWithStroke("Combo: " + combo + " (Mejor: " + bestCombo + ")", 20, 110);
+      drawTextWithStroke("Nivel: " + level, 20, 140);
+
 
       const blinkSlow =
         slowMotionActive && slowMotionTimer <= 1200;
@@ -1024,31 +1037,39 @@
       }
 
       if (isGameOver) {
+        // Fondo oscuro encima
         ctx.fillStyle = "rgba(0,0,0,0.6)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.fillStyle = "#fff";
-        ctx.font = "32px system-ui";
+        // Centramos el texto en X
         ctx.textAlign = "center";
-        ctx.fillText("💀 GAME OVER 💀", canvas.width / 2, canvas.height / 2 - 30);
 
-        ctx.font = "20px system-ui";
-        ctx.fillText(
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height * 0.46; // un poco arriba del centro visual
+
+        // Título GAME OVER
+        drawTextWithStroke("💀 GAME OVER 💀", centerX, centerY - 30, 34);
+
+        // Puntaje final
+        drawTextWithStroke(
           "Puntaje final: " + Math.floor(score),
-          canvas.width / 2,
-          canvas.height / 2 + 5
+          centerX,
+          centerY + 5,
+          20
         );
-        ctx.fillText(
-          "Mejor puntaje: " + Math.floor(bestScore),
-          canvas.width / 2,
-          canvas.height / 2 + 35
-        );
-        ctx.fillText(
+
+        // Indicaciones
+        drawTextWithStroke(
           "Pulsa ESPACIO para reiniciar",
-          canvas.width / 2,
-          canvas.height / 2 + 65
+          centerX,
+          centerY + 40,
+          18
         );
+
+        // Volvemos al alineado normal para el resto del HUD
+        ctx.textAlign = "start";
       }
+
 
       ctx.restore();
     }
@@ -1069,6 +1090,18 @@
       const vh = window.innerHeight;
       document.querySelector('.game-wrapper').style.height = vh + 'px';
     }
+
+    function drawTextWithStroke(text, x, y, size = 20, color = "#fff") {
+      ctx.font = size + "px system-ui";
+      ctx.fillStyle = color;
+
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "rgba(0,0,0,0.55)";
+
+      ctx.strokeText(text, x, y);
+      ctx.fillText(text, x, y);
+    }
+
 
     if (isTouchDevice) {
       window.addEventListener('resize', fixViewportHeight);
