@@ -16,7 +16,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="mobile-web-app-capable" content="yes">
 
-  <!-- Manifest de la app (opcional) -->
+  <!-- Manifest de la app -->
   <link rel="manifest" href="manifest.json">
 
   <title>Mini Juego 2D - Esquiva los bloques</title>
@@ -35,10 +35,8 @@
       justify-content: center;
       background: radial-gradient(circle at top, #101020, #05010a 60%);
       color: #e5e7eb;
-      padding-top: env(safe-area-inset-top, 0px);
-      /* respeta notch en iOS */
+      padding-top: env(safe-area-inset-top, 0px); /* para notch en iOS */
     }
-
 
     .game-wrapper {
       width: 100%;
@@ -91,6 +89,7 @@
       width: 100%;
       justify-content: space-between;
       margin-bottom: 18px;
+      padding: 0 10px;
     }
 
     .mobile-controls button {
@@ -105,20 +104,18 @@
       touch-action: none;
     }
 
+    .mobile-controls button:active {
+      transform: scale(0.97) translateY(1px);
+    }
+
+    /* Botones de movimiento más grandes, extras más pequeños */
     .mobile-controls .btn-move {
       flex: 1.6;
-      /* más anchos: izquierda/derecha */
     }
 
     .mobile-controls .btn-extra {
       flex: 0.9;
-      /* más pequeños: restart y hardcore */
       font-size: 18px;
-    }
-
-
-    .mobile-controls button:active {
-      transform: scale(0.97) translateY(1px);
     }
 
     body.is-touch .mobile-controls {
@@ -152,7 +149,7 @@
 
       #gameCanvas {
         width: 100%;
-        height: 82vh;
+        height: 82vh;       /* menos alto para que no choque con notch y botones */
         max-height: 82vh;
         border-radius: 12px;
         aspect-ratio: auto;
@@ -213,7 +210,7 @@
   </div>
 
   <!-- JS externo con query para cache busting -->
-  <script src="game.js?v=0.1.8"></script>
+  <script src="game.js?v=0.2.4"></script>
 </body>
 
 </html>
