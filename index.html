@@ -35,7 +35,10 @@
       justify-content: center;
       background: radial-gradient(circle at top, #101020, #05010a 60%);
       color: #e5e7eb;
+      padding-top: env(safe-area-inset-top, 0px);
+      /* respeta notch en iOS */
     }
+
 
     .game-wrapper {
       width: 100%;
@@ -102,6 +105,18 @@
       touch-action: none;
     }
 
+    .mobile-controls .btn-move {
+      flex: 1.6;
+      /* más anchos: izquierda/derecha */
+    }
+
+    .mobile-controls .btn-extra {
+      flex: 0.9;
+      /* más pequeños: restart y hardcore */
+      font-size: 18px;
+    }
+
+
     .mobile-controls button:active {
       transform: scale(0.97) translateY(1px);
     }
@@ -137,8 +152,8 @@
 
       #gameCanvas {
         width: 100%;
-        height: 94vh;
-        max-height: 94vh;
+        height: 82vh;
+        max-height: 82vh;
         border-radius: 12px;
         aspect-ratio: auto;
       }
@@ -149,8 +164,9 @@
       }
 
       .mobile-controls button {
-        padding: 18px 0;
+        padding: 20px 0;
         font-size: 26px;
+        min-width: 64px;
       }
     }
 
@@ -182,13 +198,12 @@
     <canvas id="gameCanvas" width="480" height="640"></canvas>
 
     <!-- Controles móviles -->
-<div class="mobile-controls">
-  <button id="btnLeft">◀</button>
-  <button id="btnRight">▶</button>
-  <button id="btnRestart">⟳</button>
-  <button id="btnHardcore">H</button>
-</div>
-
+    <div class="mobile-controls">
+      <button id="btnLeft" class="btn-move">◀</button>
+      <button id="btnRight" class="btn-move">▶</button>
+      <button id="btnRestart" class="btn-extra">⟳</button>
+      <button id="btnHardcore" class="btn-extra">H</button>
+    </div>
 
     <div class="info">
       Controles: <span>◀️ ▶️</span> para moverte &nbsp;|&nbsp;

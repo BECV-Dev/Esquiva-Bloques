@@ -1,4 +1,4 @@
-const GAME_VERSION = "v0.2.1";
+const GAME_VERSION = "v0.2.2";
 console.log("Esquiva los bloques –", GAME_VERSION);
 
 const canvas = document.getElementById("gameCanvas");
@@ -25,7 +25,7 @@ const isTouchDevice =
 
 // En móviles/tablets empezamos en calidad media por seguridad
 if (isTouchDevice) {
-    qualityProfile = QUALITY_MEDIUM;
+    qualityProfile = QUALITY_LOW;
 }
 
 // Para medir FPS y bajar calidad si hace falta
@@ -90,6 +90,9 @@ if (isTouchDevice) {
     const pressLeft = (e) => {
         e.preventDefault();
         keys.ArrowLeft = true;
+        if (gameState === "ready") {
+            restartGame();
+        }
     };
     const releaseLeft = (e) => {
         e.preventDefault();
@@ -99,6 +102,9 @@ if (isTouchDevice) {
     const pressRight = (e) => {
         e.preventDefault();
         keys.ArrowRight = true;
+        if (gameState === "ready") {
+            restartGame();
+        }
     };
     const releaseRight = (e) => {
         e.preventDefault();
@@ -163,6 +169,11 @@ if (isTouchDevice) {
         const middle = rect.width / 2;
         const deadZone = rect.width * 0.1;
 
+        // Arrancar partida si está en READY
+        if (gameState === "ready") {
+            restartGame();
+        }
+
         keys.ArrowLeft = false;
         keys.ArrowRight = false;
 
@@ -172,6 +183,7 @@ if (isTouchDevice) {
             keys.ArrowRight = true;
         }
     };
+
 
     const handleCanvasTouchEnd = (e) => {
         e.preventDefault();
@@ -967,29 +979,31 @@ function draw() {
         ctx.restore();
     });
 
-    // Motion field diagonal suave (con menos densidad en perfiles bajos)
-    motionFieldOffset += 0.6;
-    let spacing = 46;
-    if (qualityProfile === QUALITY_MEDIUM) spacing = 60;
-    if (qualityProfile === QUALITY_LOW) spacing = 80;
+    // Motion field diagonal suave (lo desactivamos en LOW)
+    if (qualityProfile !== QUALITY_LOW) {
+        motionFieldOffset += 0.6;
+        let spacing = 46;
+        if (qualityProfile === QUALITY_MEDIUM) spacing = 60;
 
-    ctx.save();
-    ctx.globalAlpha = 0.08;
-    ctx.strokeStyle = "rgba(148,163,184,0.75)";
-    ctx.lineWidth = 1;
+        ctx.save();
+        ctx.globalAlpha = 0.08;
+        ctx.strokeStyle = "rgba(148,163,184,0.75)";
+        ctx.lineWidth = 1;
 
-    for (let i = -height; i < width + height; i += spacing) {
-        const x1 = i + motionFieldOffset;
-        const y1 = 0;
-        const x2 = x1 - height;
-        const y2 = height;
+        for (let i = -height; i < width + height; i += spacing) {
+            const x1 = i + motionFieldOffset;
+            const y1 = 0;
+            const x2 = x1 - height;
+            const y2 = height;
 
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+        ctx.restore();
     }
-    ctx.restore();
+
 
     // Vignette
     const vignette = ctx.createRadialGradient(
